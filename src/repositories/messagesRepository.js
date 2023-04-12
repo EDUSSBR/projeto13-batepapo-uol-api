@@ -6,7 +6,7 @@ export const messagesRepository = {
     getMessages: function getMessages(){
         return this.db.find({}).toArray()
     },
-    // createMessage: function createMessage(message) {
-    //     return this.db.find
-    // },
+    createMessage: function createMessage(message) {
+        return this.db.insertOne(message)
+    },
 }
