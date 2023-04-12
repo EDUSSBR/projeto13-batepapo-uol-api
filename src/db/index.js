@@ -14,12 +14,11 @@ export default db = (async  (host=process.env.DATABASE_URL)=> {
     
     try {
         console.log("connecting to MongoDB...")
-        conn = await client.connect().then((client)=>{
+        return await client.connect().then((client)=>{
             console.log("Mongo is sucessfully connected!")
             return client
         })
-
-        return conn
+        
     } catch (e) {
         console.log(e)
     }
