@@ -1,10 +1,10 @@
-import { createParticipant } from "../entities/participants.js";
-import { createMessage } from "../entities/message.js";
-import { participantsRepository } from "../repositories/participantsRepository.js";
-import { messagesRepository } from "../repositories/messagesRepository.js";
+import { createParticipant } from "../../entities/participants.js";
+import { createMessage } from "../../entities/message.js";
+import { participantsRepository } from "../../repositories/participantsRepository.js";
+import { messagesRepository } from "../../repositories/messagesRepository.js";
 
 
-export async function createUserService({ name }) {
+export async function createParticipantService({ name }) {
     const participants = await participantsRepository.getParticipantsByName(name)
     if (participants !== null) {
         throw { message: "User already exists", status: 409 }

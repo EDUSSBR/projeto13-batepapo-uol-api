@@ -1,16 +1,16 @@
 import express from "express";
-import { createParticipant } from "../entities/participants.js";
 import { participantSchema } from "../entities/schemas/participantSchema.js";
-import { createUserService } from "../services/createUserService.js";
-import { getUsersService } from "../services/getUsersService.js";
+import { createParticipantService } from "../services/participants/createParticipantService.js";
+import { getParticipantsService } from "../services/participants/getParticipantsService.js";
+import { stripHtml } from "string-strip-html";
+
 const router = express.Router()
 
 router.post("/participants", async (req, res) => {
-    const { name } = req.body
-    const newParticipant = createParticipant(name, "123")
     try {
-        const participant = await participantSchema.validateAsync({ name })
-        await createUserService({ name })
+        const name = stripHtml(req.body.name.trim()).result
+        await participantSchema.validateAsync({ name })
+        await createParticipantService({ name })
         res.status(201).send()
     } catch (e) {
         if (e.details !== undefined) {
@@ -23,8 +23,8 @@ router.post("/participants", async (req, res) => {
 })
 
 router.get("/participants", async (req, res) => {
-    try{
-        const participants = await getUsersService()
+    try {
+        const participants = await getParticipantsService()
         return res.send(participants)
     } catch (e) {
         console.log(e)
