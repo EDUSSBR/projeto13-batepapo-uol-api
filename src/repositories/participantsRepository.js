@@ -6,6 +6,9 @@ export const participantsRepository = {
     getParticipantsByName: function getParticipantsByName(name) {
         return db.collection("participants").findOne({ name })
     },
+    getParticipants: function getParticipants() {
+        return db.collection("participants").find().toArray()
+    },
     createParticipant: function createParticipant(participant) {
         return db.collection("participants").insertOne(participant)
     },
