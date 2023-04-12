@@ -2,7 +2,6 @@ import express from "express";
 import { messageSchema } from "../entities/schemas/messageSchema.js";
 import { getMessagesService } from "../services/messages/getMessagesService.js";
 import { createMessagesService } from "../services/messages/createMessageService.js";
-// import { createMessagesService } from "../services/messages/createMessagesService.js";
 const router = express.Router()
 
 router.post("/messages", async (req, res) => {
