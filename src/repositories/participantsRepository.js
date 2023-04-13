@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb'
+
 let db = await import('../db/index.js')
 db = await db.default
 
@@ -13,6 +15,9 @@ export const participantsRepository = {
         return this.db.insertOne(participant)
     },
     updateParticipantStatus: function updateParticipantStatus(id) {
-        return this.db.updateOne({ _id: id }, {$set : { lastStatus: Date.now()}})
+        return this.db.updateOne({ _id: new ObjectId(id) }, {$set : { lastStatus: Date.now()}})
+    },
+    removeParticipant: function removeParticipant(id){
+        return this.db.deleteOne({_id: new ObjectId(id)})
     }
 }
