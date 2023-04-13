@@ -4,12 +4,13 @@ import { getMessagesService } from "../services/messages/getMessagesService.js";
 import { createMessagesService } from "../services/messages/createMessageService.js";
 import { removeMessageByIdService } from "../services/messages/removeMessageByIdService.js";
 import { updateMessageService } from "../services/messages/updateMessageService.js";
+import { stripHtml } from "string-strip-html";
 const router = express.Router()
 
 router.post("/messages", async (req, res) => {
     try {
-        const incommingMessage = { to: req.body.to.trim(), text: req.body.text.trim(), type: req.body.type.trim() }
-        const from = req.headers.user.trim()
+        const incommingMessage = { to: stripHtml(req.body.to).result.trim(), text: stripHtml(req.body.text).result.trim(), type: stripHtml(req.body.type).result.trim() }
+        const from = stripHtml(req.headers.user).result.trim()
         await messageSchema.validateAsync({ ...incommingMessage, from })
         await createMessagesService({ ...incommingMessage, from })
         res.status(201).send()
@@ -20,13 +21,24 @@ router.post("/messages", async (req, res) => {
 })
 router.get("/messages", async (req, res) => {
     try {
+        const limit = req.query.limit?.trim()
+        if (limit !==undefined && (limit<1 || !/^[0-9]+$/.test(limit))) {
+            throw ""
+        }
+        const user = req.headers.user.trim()
         const messages = await getMessagesService()
-        res.status(200).send(messages)
+        const filteredMessages = messages.filter(message=> message.type==="message" || message.type==="status" || (message.type==="private_message" && message.from===user) || (message.type==="private_message" &&  message.to===user))
+        if (limit>0){
+            res.send(filteredMessages.slice(-Number(limit)))
+            return
+        }
+        res.send(filteredMessages)
     } catch (e) {
         console.log(e)
-        res.status(500).send()
+        res.status(422).send()
     }
 })
+
 
 router.delete("/messages/:id", async (req, res) => {
     try {

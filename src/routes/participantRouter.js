@@ -11,16 +11,18 @@ router.post("/participants", async (req, res) => {
         if (req.body.name === undefined){
             return res.status(422).send()
         }
-        const name = stripHtml(req.body?.name?.trim()).result
+        const name = stripHtml(req.body?.name).result.trim()
         await participantSchema.validateAsync({ name })
         await createParticipantService({ name })
         res.status(201).send()
     } catch (e) {
         if (e.details !== undefined) {
             res.status(422).send({ message: `${e.details[0].message}` })
-        } else {
+        } else if (e.status){
             console.log(e)
             res.status(e.status).send({ message: e.message })
+        } else {
+            res.status(422).send()
         }
     }
 })
