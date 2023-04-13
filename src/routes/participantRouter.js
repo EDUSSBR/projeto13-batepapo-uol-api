@@ -8,7 +8,10 @@ const router = express.Router()
 
 router.post("/participants", async (req, res) => {
     try {
-        const name = stripHtml(req.body.name.trim()).result
+        if (req.body.name === undefined){
+            return res.status(422).send()
+        }
+        const name = stripHtml(req.body?.name?.trim()).result
         await participantSchema.validateAsync({ name })
         await createParticipantService({ name })
         res.status(201).send()
