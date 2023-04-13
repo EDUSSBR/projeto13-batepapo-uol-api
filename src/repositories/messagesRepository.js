@@ -18,6 +18,6 @@ export const messagesRepository = {
         return this.db.insertOne(message)
     },
     updateMessage: function updateMessage(id, message) {
-        return this.db.updateOne({_id: new ObjectId(id)}, { "$set": { text: message}})
+        return this.db.updateOne({_id: new ObjectId(id)}, { $set: { text: message}})
     },
 }
